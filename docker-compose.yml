@@ -1,0 +1,156 @@
+
+
+services:
+  naming-server:
+    image: nikolajokovic/naming-server:latest
+    container_name: naming-server
+    ports:
+      - "8761:8761"
+    networks:
+      - currency-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8761"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  users-service:
+    image: nikolajokovic/users-service:latest
+    container_name: users-service
+    ports:
+      - "8089:8089"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+    depends_on:
+      naming-server:
+        condition: service_healthy
+    networks:
+      - currency-network
+
+  bank-account:
+    image: nikolajokovic/bank-account:latest
+    container_name: bank-account
+    ports:
+      - "8082:8082"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+    depends_on:
+      naming-server:
+        condition: service_healthy
+      users-service:
+        condition: service_started
+    networks:
+      - currency-network
+
+  crypto-wallet:
+    image: nikolajokovic/crypto-wallet:latest
+    container_name: crypto-wallet
+    ports:
+      - "8085:8085"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+    depends_on:
+      naming-server:
+        condition: service_healthy
+      users-service:
+        condition: service_started
+    networks:
+      - currency-network
+
+  currency-exchange:
+    image: nikolajokovic/currency-exchange:latest
+    container_name: currency-exchange
+    ports:
+      - "8087:8087"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+    depends_on:
+      naming-server:
+        condition: service_healthy
+    networks:
+      - currency-network
+
+  crypto-exchange:
+    image: nikolajokovic/crypto-exchange:latest
+    container_name: crypto-exchange
+    ports:
+      - "8084:8084"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+    depends_on:
+      naming-server:
+        condition: service_healthy
+    networks:
+      - currency-network
+
+  currency-conversion:
+    image: nikolajokovic/currency-conversion:latest
+    container_name: currency-conversion
+    ports:
+      - "8086:8086"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+    depends_on:
+      naming-server:
+        condition: service_healthy
+      currency-exchange:
+        condition: service_started
+      bank-account:
+        condition: service_started
+    networks:
+      - currency-network
+
+  crypto-conversion:
+    image: nikolajokovic/crypto-conversion:latest
+    container_name: crypto-conversion
+    ports:
+      - "8083:8083"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+    depends_on:
+      naming-server:
+        condition: service_healthy
+      crypto-exchange:
+        condition: service_started
+      crypto-wallet:
+        condition: service_started
+    networks:
+      - currency-network
+
+  trade-service:
+    image: nikolajokovic/trade-service:latest
+    container_name: trade-service
+    ports:
+      - "8088:8088"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+    depends_on:
+      naming-server:
+        condition: service_healthy
+      bank-account:
+        condition: service_started
+      crypto-wallet:
+        condition: service_started
+      currency-exchange:
+        condition: service_started
+    networks:
+      - currency-network
+
+  api-gateway:
+    image: nikolajokovic/api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "8765:8765"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+    depends_on:
+      naming-server:
+        condition: service_healthy
+      users-service:
+        condition: service_started
+    networks:
+      - currency-network
+
+networks:
+  currency-network:
+    driver: bridge

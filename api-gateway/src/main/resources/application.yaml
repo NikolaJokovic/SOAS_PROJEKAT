@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: api-gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        # Currency Conversion
+        - id: currency-conversion
+          uri: lb://currency-conversion
+          predicates:
+            - Path=/currency-conversion/**
+
+        # Crypto Conversion
+        - id: crypto-conversion
+          uri: lb://crypto-conversion
+          predicates:
+            - Path=/crypto-conversion/**
+
+        # Trade Service
+        - id: trade-service
+          uri: lb://trade-service
+          predicates:
+            - Path=/trade-service/**
+
+        # Users Service
+        - id: users-service
+          uri: lb://users-service
+          predicates:
+            - Path=/users/**
+
+        # Bank Account
+        - id: bank-account
+          uri: lb://bank-account
+          predicates:
+            - Path=/bank-accounts/**
+
+        # Crypto Wallet
+        - id: crypto-wallet
+          uri: lb://crypto-wallet
+          predicates:
+            - Path=/crypto-wallets/**
+
+        # Currency Exchange
+        - id: currency-exchange
+          uri: lb://currency-exchange
+          predicates:
+            - Path=/currency-exchange/**
+
+        # Crypto Exchange
+        - id: crypto-exchange
+          uri: lb://crypto-exchange
+          predicates:
+            - Path=/crypto-exchange/**
+
+server:
+  port: 8765
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    insance:
+      prefer-ip-address: true
