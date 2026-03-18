@@ -13,6 +13,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 30s
 
   users-service:
     image: nikolajokovic/users-service:latest
@@ -26,6 +27,12 @@ services:
         condition: service_healthy
     networks:
       - currency-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8089/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   bank-account:
     image: nikolajokovic/bank-account:latest
@@ -41,6 +48,12 @@ services:
         condition: service_started
     networks:
       - currency-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8082/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   crypto-wallet:
     image: nikolajokovic/crypto-wallet:latest
@@ -56,6 +69,12 @@ services:
         condition: service_started
     networks:
       - currency-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8085/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   currency-exchange:
     image: nikolajokovic/currency-exchange:latest
@@ -69,6 +88,12 @@ services:
         condition: service_healthy
     networks:
       - currency-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8087/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   crypto-exchange:
     image: nikolajokovic/crypto-exchange:latest
@@ -82,6 +107,12 @@ services:
         condition: service_healthy
     networks:
       - currency-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8084/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   currency-conversion:
     image: nikolajokovic/currency-conversion:latest
@@ -99,6 +130,12 @@ services:
         condition: service_started
     networks:
       - currency-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8086/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   crypto-conversion:
     image: nikolajokovic/crypto-conversion:latest
@@ -116,6 +153,12 @@ services:
         condition: service_started
     networks:
       - currency-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8083/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   trade-service:
     image: nikolajokovic/trade-service:latest
@@ -135,6 +178,12 @@ services:
         condition: service_started
     networks:
       - currency-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8088/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   api-gateway:
     image: nikolajokovic/api-gateway:latest
@@ -150,6 +199,12 @@ services:
         condition: service_started
     networks:
       - currency-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8765/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
 networks:
   currency-network:

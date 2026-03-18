@@ -55,6 +55,13 @@ public class CryptoWalletService {
                 .build();
     }
 
+    @Transactional
+    public CryptoWalletDTO getWalletById(Long id) {
+        CryptoWallet wallet = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Wallet not found:" + id));
+        return convertToDTO(wallet);
+    }
+
     private CryptoWallet convertToEnum(CryptoWalletDTO dto){
         return CryptoWallet.builder()
                 .id(dto.getId())

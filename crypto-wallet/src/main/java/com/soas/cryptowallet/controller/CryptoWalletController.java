@@ -8,11 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/crypto-wallet")  // plural da se poklapa sa proxy-jem
+@RequestMapping("/crypto-wallet")
 @RequiredArgsConstructor
 public class CryptoWalletController {
 
     private final CryptoWalletService service;
+
+   @GetMapping({"/{id}"})
+   public ResponseEntity<CryptoWalletDTO> getWalletById(@PathVariable Long id){
+       return ResponseEntity.ok(service.getWalletById(id));
+   }
 
     @GetMapping("/email/{email}")
     public ResponseEntity<CryptoWalletDTO> getWalletByEmail(@PathVariable("email") String email) {

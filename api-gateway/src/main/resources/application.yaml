@@ -34,13 +34,13 @@ spring:
         - id: bank-account
           uri: lb://bank-account
           predicates:
-            - Path=/bank-accounts/**
+            - Path=/bank-account/**
 
         # Crypto Wallet
         - id: crypto-wallet
           uri: lb://crypto-wallet
           predicates:
-            - Path=/crypto-wallets/**
+            - Path=/crypto-wallet/**
 
         # Currency Exchange
         - id: currency-exchange
@@ -61,5 +61,6 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-    insance:
-      prefer-ip-address: true
+  registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
